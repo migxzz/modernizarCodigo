@@ -57,7 +57,7 @@
 }
 
 .price-input::before {
-  content: "R$";
+  content: 'R$';
   position: absolute;
   left: 10px;
   top: 50%;

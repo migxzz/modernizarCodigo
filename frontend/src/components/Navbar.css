@@ -50,16 +50,16 @@
     flex-direction: column;
     padding: 10px;
   }
-  
+
   .navbar-logo {
     margin-bottom: 10px;
   }
-  
+
   .navbar-menu ul {
     flex-wrap: wrap;
     justify-content: center;
   }
-  
+
   .navbar-menu li {
     margin: 5px;
   }

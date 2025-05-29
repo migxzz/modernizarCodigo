@@ -2,7 +2,8 @@
   "env": {
     "browser": true,
     "es2021": true,
-    "jest": true
+    "jest": true,
+    "node": true
   },
   "extends": [
     "eslint:recommended",
@@ -29,5 +30,8 @@
     "react": {
       "version": "detect"
     }
+  },
+  "globals": {
+    "process": true
   }
 }
