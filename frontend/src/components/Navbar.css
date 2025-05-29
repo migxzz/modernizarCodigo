@@ -45,21 +45,37 @@
   background-color: rgba(255, 255, 255, 0.2);
 }
 
+.logout-button {
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.logout-button:hover {
+  background-color: white;
+  color: #333;
+}
+
 @media (max-width: 768px) {
   .navbar-container {
     flex-direction: column;
     padding: 10px;
   }
-
+  
   .navbar-logo {
     margin-bottom: 10px;
   }
-
+  
   .navbar-menu ul {
     flex-wrap: wrap;
     justify-content: center;
   }
-
+  
   .navbar-menu li {
     margin: 5px;
   }
