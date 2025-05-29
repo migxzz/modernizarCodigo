@@ -1,36 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { clientesService } from '../../services/api';
+import { useClientes } from '../../context/ClienteContext';
 import './Clientes.css';
 
 const ClientesList = () => {
-  const [clientes, setClientes] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchClientes = async () => {
-      try {
-        const data = await clientesService.getAll();
-        setClientes(data);
-        setLoading(false);
-      } catch (err) {
-        setError('Erro ao carregar clientes. Por favor, tente novamente.');
-        setLoading(false);
-        console.error('Erro ao buscar clientes:', err);
-      }
-    };
-
-    fetchClientes();
-  }, []);
+  const { clientes, loading, error, deleteCliente } = useClientes();
 
   const handleDelete = async id => {
     if (window.confirm('Tem certeza que deseja excluir este cliente?')) {
       try {
-        await clientesService.delete(id);
-        setClientes(clientes.filter(cliente => cliente.id !== id));
+        await deleteCliente(id);
       } catch (err) {
-        setError('Erro ao excluir cliente. Por favor, tente novamente.');
         console.error('Erro ao excluir cliente:', err);
       }
     }

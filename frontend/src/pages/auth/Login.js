@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import authService from '../../services/authService';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import './Login.css';
 
 const Login = () => {
@@ -9,6 +9,16 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const { login, isAuthenticated } = useAuth();
+  
+  // Redirecionar se já estiver autenticado
+  useEffect(() => {
+    if (isAuthenticated) {
+      const from = location.state?.from?.pathname || '/dashboard';
+      navigate(from);
+    }
+  }, [isAuthenticated, navigate, location]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,11 +26,10 @@ const Login = () => {
     setLoading(true);
 
     try {
-      await authService.login(email, senha);
-      navigate('/dashboard');
+      await login(email, senha);
+      // Não precisa navegar aqui, o useEffect cuidará disso
     } catch (err) {
       setError('Email ou senha inválidos');
-    } finally {
       setLoading(false);
     }
   };
