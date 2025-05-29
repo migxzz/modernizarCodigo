@@ -7,13 +7,13 @@ const VendaForm = ({ view = false }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const isViewMode = view || (id && view !== false);
-  
+
   const [venda, setVenda] = useState({
     cliente_id: '',
     forma_pagamento: '',
-    itens: [{ produto_id: '', quantidade: 1 }]
+    itens: [{ produto_id: '', quantidade: 1 }],
   });
-  
+
   const [clientes, setClientes] = useState([]);
   const [produtos, setProdutos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -26,12 +26,12 @@ const VendaForm = ({ view = false }) => {
         // Carregar clientes e produtos
         const [clientesData, produtosData] = await Promise.all([
           clientesService.getAll(),
-          produtosService.getAll()
+          produtosService.getAll(),
         ]);
-        
+
         setClientes(clientesData);
         setProdutos(produtosData);
-        
+
         // Se estiver no modo de visualização ou edição, carregar dados da venda
         if (id) {
           const vendaData = await vendasService.getById(id);
@@ -40,11 +40,11 @@ const VendaForm = ({ view = false }) => {
             forma_pagamento: vendaData.forma_pagamento,
             itens: vendaData.itens.map(item => ({
               produto_id: item.produto_id,
-              quantidade: item.quantidade
-            }))
+              quantidade: item.quantidade,
+            })),
           });
         }
-        
+
         setLoading(false);
       } catch (err) {
         setError('Erro ao carregar dados. Por favor, tente novamente.');
@@ -56,7 +56,7 @@ const VendaForm = ({ view = false }) => {
     fetchData();
   }, [id]);
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const { name, value } = e.target;
     setVenda(prev => ({ ...prev, [name]: value }));
   };
@@ -71,48 +71,48 @@ const VendaForm = ({ view = false }) => {
   const addItem = () => {
     setVenda(prev => ({
       ...prev,
-      itens: [...prev.itens, { produto_id: '', quantidade: 1 }]
+      itens: [...prev.itens, { produto_id: '', quantidade: 1 }],
     }));
   };
 
-  const removeItem = (index) => {
+  const removeItem = index => {
     const updatedItens = [...venda.itens];
     updatedItens.splice(index, 1);
     setVenda(prev => ({ ...prev, itens: updatedItens }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    
+
     if (isViewMode) return;
-    
+
     try {
       // Validações básicas
       if (!venda.cliente_id) {
         setError('Selecione um cliente.');
         return;
       }
-      
+
       if (!venda.forma_pagamento) {
         setError('Informe a forma de pagamento.');
         return;
       }
-      
+
       if (venda.itens.length === 0) {
         setError('Adicione pelo menos um item à venda.');
         return;
       }
-      
+
       for (const item of venda.itens) {
         if (!item.produto_id || !item.quantidade || item.quantidade <= 0) {
           setError('Todos os itens devem ter um produto selecionado e quantidade maior que zero.');
           return;
         }
       }
-      
+
       // Enviar dados para a API
       await vendasService.create(venda);
-      
+
       setSuccess('Venda registrada com sucesso!');
       setTimeout(() => {
         navigate('/vendas');
@@ -139,7 +139,7 @@ const VendaForm = ({ view = false }) => {
       <form onSubmit={handleSubmit}>
         <div className="form-section">
           <h2>Informações da Venda</h2>
-          
+
           <div className="form-group">
             <label htmlFor="cliente_id">Cliente</label>
             <select
@@ -180,7 +180,7 @@ const VendaForm = ({ view = false }) => {
 
         <div className="form-section">
           <h2>Itens da Venda</h2>
-          
+
           <div className="itens-venda">
             {venda.itens.map((item, index) => (
               <div key={index} className="item-row">
@@ -190,7 +190,7 @@ const VendaForm = ({ view = false }) => {
                     id={`produto_id_${index}`}
                     name="produto_id"
                     value={item.produto_id}
-                    onChange={(e) => handleItemChange(index, e)}
+                    onChange={e => handleItemChange(index, e)}
                     disabled={isViewMode}
                     required
                   >
@@ -202,7 +202,7 @@ const VendaForm = ({ view = false }) => {
                     ))}
                   </select>
                 </div>
-                
+
                 <div className="form-group">
                   <label htmlFor={`quantidade_${index}`}>Quantidade</label>
                   <input
@@ -210,13 +210,13 @@ const VendaForm = ({ view = false }) => {
                     id={`quantidade_${index}`}
                     name="quantidade"
                     value={item.quantidade}
-                    onChange={(e) => handleItemChange(index, e)}
+                    onChange={e => handleItemChange(index, e)}
                     min="1"
                     disabled={isViewMode}
                     required
                   />
                 </div>
-                
+
                 {!isViewMode && venda.itens.length > 1 && (
                   <button
                     type="button"
@@ -228,13 +228,9 @@ const VendaForm = ({ view = false }) => {
                 )}
               </div>
             ))}
-            
+
             {!isViewMode && (
-              <button
-                type="button"
-                className="btn btn-secondary add-item-btn"
-                onClick={addItem}
-              >
+              <button type="button" className="btn btn-secondary add-item-btn" onClick={addItem}>
                 Adicionar Item
               </button>
             )}
@@ -245,7 +241,7 @@ const VendaForm = ({ view = false }) => {
           <Link to="/vendas" className="btn btn-secondary">
             Voltar
           </Link>
-          
+
           {!isViewMode && (
             <button type="submit" className="btn btn-primary">
               Registrar Venda

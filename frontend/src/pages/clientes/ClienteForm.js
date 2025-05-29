@@ -7,13 +7,13 @@ const ClienteForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEditMode = !!id;
-  
+
   const [cliente, setCliente] = useState({
     nome: '',
     email: '',
-    telefone: ''
+    telefone: '',
   });
-  
+
   const [loading, setLoading] = useState(isEditMode);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -21,13 +21,13 @@ const ClienteForm = () => {
   useEffect(() => {
     const fetchCliente = async () => {
       if (!isEditMode) return;
-      
+
       try {
         const data = await clientesService.getById(id);
         setCliente({
           nome: data.nome,
           email: data.email || '',
-          telefone: data.telefone || ''
+          telefone: data.telefone || '',
         });
         setLoading(false);
       } catch (err) {
@@ -40,21 +40,21 @@ const ClienteForm = () => {
     fetchCliente();
   }, [id, isEditMode]);
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const { name, value } = e.target;
     setCliente(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    
+
     try {
       // Validações básicas
       if (!cliente.nome.trim()) {
         setError('Nome é obrigatório.');
         return;
       }
-      
+
       if (isEditMode) {
         await clientesService.update(id, cliente);
         setSuccess('Cliente atualizado com sucesso!');
@@ -62,12 +62,14 @@ const ClienteForm = () => {
         await clientesService.create(cliente);
         setSuccess('Cliente cadastrado com sucesso!');
       }
-      
+
       setTimeout(() => {
         navigate('/clientes');
       }, 2000);
     } catch (err) {
-      setError(`Erro ao ${isEditMode ? 'atualizar' : 'cadastrar'} cliente. Por favor, tente novamente.`);
+      setError(
+        `Erro ao ${isEditMode ? 'atualizar' : 'cadastrar'} cliente. Por favor, tente novamente.`
+      );
       console.error(`Erro ao ${isEditMode ? 'atualizar' : 'cadastrar'} cliente:`, err);
     }
   };

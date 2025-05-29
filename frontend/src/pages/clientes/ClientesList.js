@@ -24,7 +24,7 @@ const ClientesList = () => {
     fetchClientes();
   }, []);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async id => {
     if (window.confirm('Tem certeza que deseja excluir este cliente?')) {
       try {
         await clientesService.delete(id);
@@ -44,7 +44,9 @@ const ClientesList = () => {
     <div className="clientes-list">
       <div className="page-header">
         <h1>Clientes</h1>
-        <Link to="/clientes/novo" className="btn btn-primary">Novo Cliente</Link>
+        <Link to="/clientes/novo" className="btn btn-primary">
+          Novo Cliente
+        </Link>
       </div>
 
       {error && <div className="alert alert-danger">{error}</div>}
@@ -73,11 +75,14 @@ const ClientesList = () => {
                   <td>{cliente.email || '-'}</td>
                   <td>{cliente.telefone || '-'}</td>
                   <td className="actions">
-                    <Link to={`/clientes/editar/${cliente.id}`} className="btn btn-secondary btn-sm">
+                    <Link
+                      to={`/clientes/editar/${cliente.id}`}
+                      className="btn btn-secondary btn-sm"
+                    >
                       Editar
                     </Link>
-                    <button 
-                      onClick={() => handleDelete(cliente.id)} 
+                    <button
+                      onClick={() => handleDelete(cliente.id)}
                       className="btn btn-danger btn-sm"
                     >
                       Excluir

@@ -17,11 +17,11 @@ exports.getProdutoById = async (req, res) => {
   try {
     const id = parseInt(req.params.id);
     const produto = await Produto.getById(id);
-    
+
     if (!produto) {
       return res.status(404).json({ message: `Produto ID ${id} não encontrado` });
     }
-    
+
     res.json(produto);
   } catch (error) {
     console.error(`Erro ao buscar produto ID ${req.params.id}:`, error);
@@ -33,27 +33,27 @@ exports.getProdutoById = async (req, res) => {
 exports.createProduto = async (req, res) => {
   try {
     const { nome, descricao, preco, estoque } = req.body;
-    
+
     // Validações
     if (!nome || nome.trim() === '') {
       return res.status(400).json({ message: 'Nome é obrigatório' });
     }
-    
+
     if (!preco || isNaN(preco) || parseFloat(preco) <= 0) {
       return res.status(400).json({ message: 'Preço deve ser um número maior que zero' });
     }
-    
+
     // Criar o produto
-    const produtoId = await Produto.create({ 
-      nome, 
-      descricao: descricao || '', 
-      preco: parseFloat(preco), 
-      estoque: estoque ? parseInt(estoque) : 0 
+    const produtoId = await Produto.create({
+      nome,
+      descricao: descricao || '',
+      preco: parseFloat(preco),
+      estoque: estoque ? parseInt(estoque) : 0,
     });
-    
-    res.status(201).json({ 
-      message: 'Produto cadastrado com sucesso', 
-      produto_id: produtoId 
+
+    res.status(201).json({
+      message: 'Produto cadastrado com sucesso',
+      produto_id: produtoId,
     });
   } catch (error) {
     console.error('Erro ao criar produto:', error);
@@ -66,30 +66,30 @@ exports.updateProduto = async (req, res) => {
   try {
     const id = parseInt(req.params.id);
     const { nome, descricao, preco, estoque } = req.body;
-    
+
     // Verificar se o produto existe
     const produto = await Produto.getById(id);
     if (!produto) {
       return res.status(404).json({ message: `Produto ID ${id} não encontrado` });
     }
-    
+
     // Validações
     if (!nome || nome.trim() === '') {
       return res.status(400).json({ message: 'Nome é obrigatório' });
     }
-    
+
     if (!preco || isNaN(preco) || parseFloat(preco) <= 0) {
       return res.status(400).json({ message: 'Preço deve ser um número maior que zero' });
     }
-    
+
     // Atualizar o produto
-    const success = await Produto.update(id, { 
-      nome, 
-      descricao: descricao || '', 
-      preco: parseFloat(preco), 
-      estoque: estoque ? parseInt(estoque) : 0 
+    const success = await Produto.update(id, {
+      nome,
+      descricao: descricao || '',
+      preco: parseFloat(preco),
+      estoque: estoque ? parseInt(estoque) : 0,
     });
-    
+
     if (success) {
       res.json({ message: `Produto ID ${id} atualizado com sucesso` });
     } else {
@@ -105,16 +105,16 @@ exports.updateProduto = async (req, res) => {
 exports.deleteProduto = async (req, res) => {
   try {
     const id = parseInt(req.params.id);
-    
+
     // Verificar se o produto existe
     const produto = await Produto.getById(id);
     if (!produto) {
       return res.status(404).json({ message: `Produto ID ${id} não encontrado` });
     }
-    
+
     // Excluir o produto
     const success = await Produto.delete(id);
-    
+
     if (success) {
       res.json({ message: `Produto ID ${id} excluído com sucesso` });
     } else {

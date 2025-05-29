@@ -42,12 +42,12 @@ const startServer = async () => {
   try {
     // Testar conexão com o banco de dados
     const dbConnected = await testConnection();
-    
+
     if (!dbConnected) {
       console.error('Não foi possível conectar ao banco de dados. Verifique as configurações.');
       process.exit(1);
     }
-    
+
     app.listen(PORT, () => {
       console.log(`Servidor rodando na porta ${PORT}`);
     });

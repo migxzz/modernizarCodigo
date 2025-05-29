@@ -10,7 +10,7 @@ const pool = mysql.createPool({
   database: process.env.DB_NAME || 'legacy_ap',
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
 });
 
 // Função para testar a conexão
@@ -28,5 +28,5 @@ async function testConnection() {
 
 module.exports = {
   pool,
-  testConnection
+  testConnection,
 };

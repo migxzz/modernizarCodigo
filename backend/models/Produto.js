@@ -27,11 +27,14 @@ class Produto {
   // Criar um novo produto
   async create(data) {
     try {
-      const [result] = await pool.query(`
+      const [result] = await pool.query(
+        `
         INSERT INTO produtos (nome, descricao, preco, estoque) 
         VALUES (?, ?, ?, ?)
-      `, [data.nome, data.descricao, data.preco, data.estoque]);
-      
+      `,
+        [data.nome, data.descricao, data.preco, data.estoque]
+      );
+
       return result.insertId;
     } catch (error) {
       console.error('Erro ao criar produto:', error);
@@ -42,12 +45,15 @@ class Produto {
   // Atualizar um produto existente
   async update(id, data) {
     try {
-      const [result] = await pool.query(`
+      const [result] = await pool.query(
+        `
         UPDATE produtos 
         SET nome = ?, descricao = ?, preco = ?, estoque = ? 
         WHERE id = ?
-      `, [data.nome, data.descricao, data.preco, data.estoque, id]);
-      
+      `,
+        [data.nome, data.descricao, data.preco, data.estoque, id]
+      );
+
       return result.affectedRows > 0;
     } catch (error) {
       console.error(`Erro ao atualizar produto ID ${id}:`, error);

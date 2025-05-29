@@ -27,11 +27,14 @@ class Cliente {
   // Criar um novo cliente
   async create(data) {
     try {
-      const [result] = await pool.query(`
+      const [result] = await pool.query(
+        `
         INSERT INTO clientes (nome, email, telefone) 
         VALUES (?, ?, ?)
-      `, [data.nome, data.email, data.telefone]);
-      
+      `,
+        [data.nome, data.email, data.telefone]
+      );
+
       return result.insertId;
     } catch (error) {
       console.error('Erro ao criar cliente:', error);
@@ -42,12 +45,15 @@ class Cliente {
   // Atualizar um cliente existente
   async update(id, data) {
     try {
-      const [result] = await pool.query(`
+      const [result] = await pool.query(
+        `
         UPDATE clientes 
         SET nome = ?, email = ?, telefone = ? 
         WHERE id = ?
-      `, [data.nome, data.email, data.telefone, id]);
-      
+      `,
+        [data.nome, data.email, data.telefone, id]
+      );
+
       return result.affectedRows > 0;
     } catch (error) {
       console.error(`Erro ao atualizar cliente ID ${id}:`, error);

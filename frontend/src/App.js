@@ -18,22 +18,22 @@ function App() {
       <div className="container">
         <Routes>
           <Route path="/" element={<Home />} />
-          
+
           {/* Rotas de Clientes */}
           <Route path="/clientes" element={<ClientesList />} />
           <Route path="/clientes/novo" element={<ClienteForm />} />
           <Route path="/clientes/editar/:id" element={<ClienteForm />} />
-          
+
           {/* Rotas de Produtos */}
           <Route path="/produtos" element={<ProdutosList />} />
           <Route path="/produtos/novo" element={<ProdutoForm />} />
           <Route path="/produtos/editar/:id" element={<ProdutoForm />} />
-          
+
           {/* Rotas de Vendas */}
           <Route path="/vendas" element={<VendasList />} />
           <Route path="/vendas/nova" element={<VendaForm />} />
           <Route path="/vendas/:id" element={<VendaForm view={true} />} />
-          
+
           {/* Rota 404 */}
           <Route path="*" element={<NotFound />} />
         </Routes>

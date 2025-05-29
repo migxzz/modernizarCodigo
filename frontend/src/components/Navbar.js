@@ -4,7 +4,7 @@ import './Navbar.css';
 
 const Navbar = () => {
   const location = useLocation();
-  
+
   return (
     <header className="navbar">
       <div className="navbar-container">

@@ -7,14 +7,14 @@ const ProdutoForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEditMode = !!id;
-  
+
   const [produto, setProduto] = useState({
     nome: '',
     descricao: '',
     preco: '',
-    estoque: 0
+    estoque: 0,
   });
-  
+
   const [loading, setLoading] = useState(isEditMode);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -22,14 +22,14 @@ const ProdutoForm = () => {
   useEffect(() => {
     const fetchProduto = async () => {
       if (!isEditMode) return;
-      
+
       try {
         const data = await produtosService.getById(id);
         setProduto({
           nome: data.nome,
           descricao: data.descricao || '',
           preco: data.preco,
-          estoque: data.estoque
+          estoque: data.estoque,
         });
         setLoading(false);
       } catch (err) {
@@ -42,32 +42,32 @@ const ProdutoForm = () => {
     fetchProduto();
   }, [id, isEditMode]);
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const { name, value } = e.target;
     setProduto(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    
+
     try {
       // Validações básicas
       if (!produto.nome.trim()) {
         setError('Nome é obrigatório.');
         return;
       }
-      
+
       if (!produto.preco || isNaN(produto.preco) || parseFloat(produto.preco) <= 0) {
         setError('Preço deve ser um número maior que zero.');
         return;
       }
-      
+
       const produtoData = {
         ...produto,
         preco: parseFloat(produto.preco),
-        estoque: parseInt(produto.estoque)
+        estoque: parseInt(produto.estoque),
       };
-      
+
       if (isEditMode) {
         await produtosService.update(id, produtoData);
         setSuccess('Produto atualizado com sucesso!');
@@ -75,12 +75,14 @@ const ProdutoForm = () => {
         await produtosService.create(produtoData);
         setSuccess('Produto cadastrado com sucesso!');
       }
-      
+
       setTimeout(() => {
         navigate('/produtos');
       }, 2000);
     } catch (err) {
-      setError(`Erro ao ${isEditMode ? 'atualizar' : 'cadastrar'} produto. Por favor, tente novamente.`);
+      setError(
+        `Erro ao ${isEditMode ? 'atualizar' : 'cadastrar'} produto. Por favor, tente novamente.`
+      );
       console.error(`Erro ao ${isEditMode ? 'atualizar' : 'cadastrar'} produto:`, err);
     }
   };

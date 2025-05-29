@@ -17,11 +17,11 @@ exports.getClienteById = async (req, res) => {
   try {
     const id = parseInt(req.params.id);
     const cliente = await Cliente.getById(id);
-    
+
     if (!cliente) {
       return res.status(404).json({ message: `Cliente ID ${id} não encontrado` });
     }
-    
+
     res.json(cliente);
   } catch (error) {
     console.error(`Erro ao buscar cliente ID ${req.params.id}:`, error);
@@ -33,18 +33,18 @@ exports.getClienteById = async (req, res) => {
 exports.createCliente = async (req, res) => {
   try {
     const { nome, email, telefone } = req.body;
-    
+
     // Validações
     if (!nome || nome.trim() === '') {
       return res.status(400).json({ message: 'Nome é obrigatório' });
     }
-    
+
     // Criar o cliente
     const clienteId = await Cliente.create({ nome, email, telefone });
-    
-    res.status(201).json({ 
-      message: 'Cliente cadastrado com sucesso', 
-      cliente_id: clienteId 
+
+    res.status(201).json({
+      message: 'Cliente cadastrado com sucesso',
+      cliente_id: clienteId,
     });
   } catch (error) {
     console.error('Erro ao criar cliente:', error);
@@ -57,21 +57,21 @@ exports.updateCliente = async (req, res) => {
   try {
     const id = parseInt(req.params.id);
     const { nome, email, telefone } = req.body;
-    
+
     // Verificar se o cliente existe
     const cliente = await Cliente.getById(id);
     if (!cliente) {
       return res.status(404).json({ message: `Cliente ID ${id} não encontrado` });
     }
-    
+
     // Validações
     if (!nome || nome.trim() === '') {
       return res.status(400).json({ message: 'Nome é obrigatório' });
     }
-    
+
     // Atualizar o cliente
     const success = await Cliente.update(id, { nome, email, telefone });
-    
+
     if (success) {
       res.json({ message: `Cliente ID ${id} atualizado com sucesso` });
     } else {
@@ -87,16 +87,16 @@ exports.updateCliente = async (req, res) => {
 exports.deleteCliente = async (req, res) => {
   try {
     const id = parseInt(req.params.id);
-    
+
     // Verificar se o cliente existe
     const cliente = await Cliente.getById(id);
     if (!cliente) {
       return res.status(404).json({ message: `Cliente ID ${id} não encontrado` });
     }
-    
+
     // Excluir o cliente
     const success = await Cliente.delete(id);
-    
+
     if (success) {
       res.json({ message: `Cliente ID ${id} excluído com sucesso` });
     } else {
