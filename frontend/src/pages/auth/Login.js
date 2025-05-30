@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import './Login.css';
 
@@ -68,6 +68,10 @@ const Login = () => {
           <button type="submit" className="login-button" disabled={loading}>
             {loading ? 'Entrando...' : 'Entrar'}
           </button>
+
+          <div className="register-link">
+            Não possui uma conta? <Link to="/register">Cadastre-se</Link>
+          </div>
         </form>
       </div>
     </div>

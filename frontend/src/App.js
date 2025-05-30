@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 import Login from './pages/auth/Login';
+import Register from './pages/auth/Register';
 import Dashboard from './pages/Dashboard';
 import ClientesList from './pages/clientes/ClientesList';
 import ClienteForm from './pages/clientes/ClienteForm';
@@ -33,6 +34,7 @@ function App() {
                   {/* Rotas públicas */}
                   <Route path="/" element={<Home />} />
                   <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
 
                   {/* Rotas protegidas */}
                   <Route element={<PrivateRoute />}>

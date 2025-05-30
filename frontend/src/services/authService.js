@@ -17,6 +17,17 @@ const authService = {
     }
   },
 
+  // Registro de novo usuário
+  register: async userData => {
+    try {
+      const response = await api.post('/auth/register', userData);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao registrar usuário:', error);
+      throw error;
+    }
+  },
+
   // Logout do usuário
   logout: () => {
     localStorage.removeItem('token');
