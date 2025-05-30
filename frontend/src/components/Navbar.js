@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './Navbar.css';
+import logoImage from '../assets/logo.png';
 
 const Navbar = () => {
   const location = useLocation();
@@ -16,7 +17,10 @@ const Navbar = () => {
   return (
     <header className="navbar">
       <div className="navbar-container">
-        <h1 className="navbar-logo">Floricultura</h1>
+        <div className="navbar-logo">
+          <img src={logoImage} alt="Logo" className="logo-img" />
+          <h1>Floricultura</h1>
+        </div>
         <nav className="navbar-menu">
           <ul>
             {isAuthenticated ? (
