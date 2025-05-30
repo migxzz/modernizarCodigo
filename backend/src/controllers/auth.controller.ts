@@ -6,6 +6,46 @@ import { criarUsuario } from '../services/auth.service';
 
 const prisma = new PrismaClient();
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Usuario:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: ID do usuário
+ *         email:
+ *           type: string
+ *           format: email
+ *           description: Email do usuário
+ *     LoginRequest:
+ *       type: object
+ *       required:
+ *         - email
+ *         - senha
+ *       properties:
+ *         email:
+ *           type: string
+ *           format: email
+ *         senha:
+ *           type: string
+ *           format: password
+ *     LoginResponse:
+ *       type: object
+ *       properties:
+ *         token:
+ *           type: string
+ *     RegistroResponse:
+ *       type: object
+ *       properties:
+ *         token:
+ *           type: string
+ *         usuario:
+ *           $ref: '#/components/schemas/Usuario'
+ */
+
 export class AuthController {
 
   async login(req: Request, res: Response): Promise<Response> {
