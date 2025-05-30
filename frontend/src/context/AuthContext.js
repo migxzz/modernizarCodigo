@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(authenticated);
       setLoading(false);
     };
-    
+
     checkAuth();
   }, []);
 
@@ -38,14 +38,10 @@ export const AuthProvider = ({ children }) => {
     isAuthenticated,
     loading,
     login,
-    logout
+    logout,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 // Hook personalizado para usar o contexto de autenticação

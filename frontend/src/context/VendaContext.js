@@ -31,7 +31,7 @@ export const VendaProvider = ({ children }) => {
   };
 
   // Adicionar uma nova venda
-  const addVenda = async (venda) => {
+  const addVenda = async venda => {
     try {
       const novaVenda = await vendasService.create(venda);
       setVendas([...vendas, novaVenda]);
@@ -43,7 +43,7 @@ export const VendaProvider = ({ children }) => {
   };
 
   // Excluir uma venda
-  const deleteVenda = async (id) => {
+  const deleteVenda = async id => {
     try {
       await vendasService.delete(id);
       setVendas(vendas.filter(v => v.id !== id));
@@ -60,14 +60,10 @@ export const VendaProvider = ({ children }) => {
     error,
     fetchVendas,
     addVenda,
-    deleteVenda
+    deleteVenda,
   };
 
-  return (
-    <VendaContext.Provider value={value}>
-      {children}
-    </VendaContext.Provider>
-  );
+  return <VendaContext.Provider value={value}>{children}</VendaContext.Provider>;
 };
 
 // Hook personalizado para usar o contexto de vendas

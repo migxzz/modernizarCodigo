@@ -31,7 +31,7 @@ export const ClienteProvider = ({ children }) => {
   };
 
   // Adicionar um novo cliente
-  const addCliente = async (cliente) => {
+  const addCliente = async cliente => {
     try {
       const novoCliente = await clientesService.create(cliente);
       setClientes([...clientes, novoCliente]);
@@ -46,7 +46,7 @@ export const ClienteProvider = ({ children }) => {
   const updateCliente = async (id, cliente) => {
     try {
       await clientesService.update(id, cliente);
-      setClientes(clientes.map(c => c.id === id ? { ...c, ...cliente } : c));
+      setClientes(clientes.map(c => (c.id === id ? { ...c, ...cliente } : c)));
     } catch (err) {
       setError('Erro ao atualizar cliente');
       throw err;
@@ -54,7 +54,7 @@ export const ClienteProvider = ({ children }) => {
   };
 
   // Excluir um cliente
-  const deleteCliente = async (id) => {
+  const deleteCliente = async id => {
     try {
       await clientesService.delete(id);
       setClientes(clientes.filter(c => c.id !== id));
@@ -72,14 +72,10 @@ export const ClienteProvider = ({ children }) => {
     fetchClientes,
     addCliente,
     updateCliente,
-    deleteCliente
+    deleteCliente,
   };
 
-  return (
-    <ClienteContext.Provider value={value}>
-      {children}
-    </ClienteContext.Provider>
-  );
+  return <ClienteContext.Provider value={value}>{children}</ClienteContext.Provider>;
 };
 
 // Hook personalizado para usar o contexto de clientes
