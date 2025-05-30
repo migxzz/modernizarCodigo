@@ -98,11 +98,17 @@ export class VendasController {
         }
       }
       
-      const novaVenda = await vendasService.criarVenda({
-        cliente_id,
+      // Converter cliente_id para número
+      const dadosVenda = {
+        cliente_id: Number(cliente_id),
         forma_pagamento,
-        itens
-      });
+        itens: itens.map(item => ({
+          produto_id: Number(item.produto_id),
+          quantidade: Number(item.quantidade)
+        }))
+      };
+      
+      const novaVenda = await vendasService.criarVenda(dadosVenda);
       
       return res.status(201).json(novaVenda);
     } catch (error: any) {
