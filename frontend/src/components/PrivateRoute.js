@@ -2,17 +2,15 @@ import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-// Componente para proteger rotas que requerem autenticação
 const PrivateRoute = () => {
   const { isAuthenticated, loading } = useAuth();
 
-  // Enquanto verifica a autenticação, mostra um indicador de carregamento
+  // Mostra um indicador de carregamento enquanto verifica a autenticação
   if (loading) {
     return <div className="loading">Carregando...</div>;
   }
 
-  // Se não estiver autenticado, redireciona para a página de login
-  // Se estiver autenticado, renderiza o componente filho (Outlet)
+  // Redireciona para a página de login se não estiver autenticado
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
 };
 

@@ -1,21 +1,13 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { vendasService } from '../services/api';
 
-// Criando o contexto de vendas
-const VendaContext = createContext(null);
+const VendaContext = createContext();
 
-// Provedor do contexto de vendas
 export const VendaProvider = ({ children }) => {
   const [vendas, setVendas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Carregar vendas ao inicializar
-  useEffect(() => {
-    fetchVendas();
-  }, []);
-
-  // Buscar todas as vendas
   const fetchVendas = async () => {
     try {
       setLoading(true);
@@ -30,43 +22,48 @@ export const VendaProvider = ({ children }) => {
     }
   };
 
-  // Adicionar uma nova venda
+  useEffect(() => {
+    fetchVendas();
+  }, []);
+
   const addVenda = async venda => {
     try {
-      const novaVenda = await vendasService.create(venda);
-      setVendas([...vendas, novaVenda]);
-      return novaVenda;
+      const response = await vendasService.create(venda);
+      await fetchVendas();
+      return { success: true, data: response };
     } catch (err) {
-      setError('Erro ao adicionar venda');
-      throw err;
+      console.error('Erro ao adicionar venda:', err);
+      return { success: false, error: err.message };
     }
   };
 
-  // Excluir uma venda
   const deleteVenda = async id => {
     try {
       await vendasService.delete(id);
-      setVendas(vendas.filter(v => v.id !== id));
+      await fetchVendas();
+      return { success: true };
     } catch (err) {
-      setError('Erro ao excluir venda');
-      throw err;
+      console.error('Erro ao excluir venda:', err);
+      return { success: false, error: err.message };
     }
   };
 
-  // Valores disponibilizados pelo contexto
-  const value = {
-    vendas,
-    loading,
-    error,
-    fetchVendas,
-    addVenda,
-    deleteVenda,
-  };
-
-  return <VendaContext.Provider value={value}>{children}</VendaContext.Provider>;
+  return (
+    <VendaContext.Provider
+      value={{
+        vendas,
+        loading,
+        error,
+        fetchVendas,
+        addVenda,
+        deleteVenda,
+      }}
+    >
+      {children}
+    </VendaContext.Provider>
+  );
 };
 
-// Hook personalizado para usar o contexto de vendas
 export const useVendas = () => {
   const context = useContext(VendaContext);
   if (!context) {

@@ -62,7 +62,7 @@ const ProdutosList = () => {
                   <td>{produto.nome}</td>
                   <td>{produto.descricao || '-'}</td>
                   <td>{formatCurrency(produto.preco)}</td>
-                  <td>{produto.estoque}</td>
+                  <td>{produto.quantidade}</td>
                   <td className="actions">
                     <Link
                       to={`/produtos/editar/${produto.id}`}

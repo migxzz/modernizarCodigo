@@ -1,46 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { produtosService } from '../../services/api';
+import { useProdutos } from '../../context/ProdutoContext';
 import './Produtos.css';
 
 const ProdutoForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEditMode = !!id;
+  const { produtos, addProduto, updateProduto } = useProdutos();
 
   const [produto, setProduto] = useState({
     nome: '',
     descricao: '',
     preco: '',
-    estoque: 0,
+    quantidade: 0,
   });
 
-  const [loading, setLoading] = useState(isEditMode);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
   useEffect(() => {
-    const fetchProduto = async () => {
-      if (!isEditMode) return;
-
-      try {
-        const data = await produtosService.getById(id);
+    if (isEditMode && produtos.length > 0) {
+      const produtoEncontrado = produtos.find(p => p.id === parseInt(id));
+      if (produtoEncontrado) {
         setProduto({
-          nome: data.nome,
-          descricao: data.descricao || '',
-          preco: data.preco,
-          estoque: data.estoque,
+          nome: produtoEncontrado.nome,
+          descricao: produtoEncontrado.descricao || '',
+          preco: produtoEncontrado.preco,
+          quantidade: produtoEncontrado.quantidade,
         });
-        setLoading(false);
-      } catch (err) {
-        setError('Erro ao carregar dados do produto. Por favor, tente novamente.');
-        setLoading(false);
-        console.error('Erro ao buscar produto:', err);
       }
-    };
-
-    fetchProduto();
-  }, [id, isEditMode]);
+    }
+  }, [id, isEditMode, produtos]);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -49,47 +41,56 @@ const ProdutoForm = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
+    setError(null);
+    setSuccess(null);
+    setLoading(true);
 
     try {
       // Validações básicas
       if (!produto.nome.trim()) {
         setError('Nome é obrigatório.');
+        setLoading(false);
         return;
       }
 
       if (!produto.preco || isNaN(produto.preco) || parseFloat(produto.preco) <= 0) {
         setError('Preço deve ser um número maior que zero.');
+        setLoading(false);
         return;
       }
 
       const produtoData = {
         ...produto,
         preco: parseFloat(produto.preco),
-        estoque: parseInt(produto.estoque),
+        quantidade: parseInt(produto.quantidade),
       };
 
+      console.log('Enviando produto:', produtoData);
+
+      let result;
       if (isEditMode) {
-        await produtosService.update(id, produtoData);
-        setSuccess('Produto atualizado com sucesso!');
+        result = await updateProduto(id, produtoData);
       } else {
-        await produtosService.create(produtoData);
-        setSuccess('Produto cadastrado com sucesso!');
+        result = await addProduto(produtoData);
       }
 
-      setTimeout(() => {
-        navigate('/produtos');
-      }, 2000);
+      if (result.success) {
+        setSuccess(`Produto ${isEditMode ? 'atualizado' : 'cadastrado'} com sucesso!`);
+        setTimeout(() => {
+          navigate('/produtos');
+        }, 2000);
+      } else {
+        setError(result.error || `Erro ao ${isEditMode ? 'atualizar' : 'cadastrar'} produto.`);
+      }
     } catch (err) {
       setError(
         `Erro ao ${isEditMode ? 'atualizar' : 'cadastrar'} produto. Por favor, tente novamente.`
       );
       console.error(`Erro ao ${isEditMode ? 'atualizar' : 'cadastrar'} produto:`, err);
+    } finally {
+      setLoading(false);
     }
   };
-
-  if (loading) {
-    return <div className="loading">Carregando...</div>;
-  }
 
   return (
     <div className="produto-form">
@@ -141,14 +142,15 @@ const ProdutoForm = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="estoque">Estoque</label>
+          <label htmlFor="quantidade">Quantidade *</label>
           <input
             type="number"
-            id="estoque"
-            name="estoque"
-            value={produto.estoque}
+            id="quantidade"
+            name="quantidade"
+            value={produto.quantidade}
             onChange={handleChange}
             min="0"
+            required
           />
         </div>
 
@@ -156,8 +158,8 @@ const ProdutoForm = () => {
           <Link to="/produtos" className="btn btn-secondary">
             Cancelar
           </Link>
-          <button type="submit" className="btn btn-primary">
-            {isEditMode ? 'Atualizar' : 'Cadastrar'}
+          <button type="submit" className="btn btn-primary" disabled={loading}>
+            {loading ? 'Salvando...' : isEditMode ? 'Atualizar' : 'Cadastrar'}
           </button>
         </div>
       </form>

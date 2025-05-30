@@ -1,21 +1,13 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { produtosService } from '../services/api';
 
-// Criando o contexto de produtos
-const ProdutoContext = createContext(null);
+const ProdutoContext = createContext();
 
-// Provedor do contexto de produtos
 export const ProdutoProvider = ({ children }) => {
   const [produtos, setProdutos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Carregar produtos ao inicializar
-  useEffect(() => {
-    fetchProdutos();
-  }, []);
-
-  // Buscar todos os produtos
   const fetchProdutos = async () => {
     try {
       setLoading(true);
@@ -30,55 +22,60 @@ export const ProdutoProvider = ({ children }) => {
     }
   };
 
-  // Adicionar um novo produto
+  useEffect(() => {
+    fetchProdutos();
+  }, []);
+
   const addProduto = async produto => {
     try {
-      const novoProduto = await produtosService.create(produto);
-      setProdutos([...produtos, novoProduto]);
-      return novoProduto;
+      const response = await produtosService.create(produto);
+      await fetchProdutos();
+      return { success: true, data: response };
     } catch (err) {
-      setError('Erro ao adicionar produto');
-      throw err;
+      console.error('Erro ao adicionar produto:', err);
+      return { success: false, error: err.message };
     }
   };
 
-  // Atualizar um produto existente
   const updateProduto = async (id, produto) => {
     try {
-      await produtosService.update(id, produto);
-      setProdutos(produtos.map(p => (p.id === id ? { ...p, ...produto } : p)));
+      const response = await produtosService.update(id, produto);
+      await fetchProdutos();
+      return { success: true, data: response };
     } catch (err) {
-      setError('Erro ao atualizar produto');
-      throw err;
+      console.error('Erro ao atualizar produto:', err);
+      return { success: false, error: err.message };
     }
   };
 
-  // Excluir um produto
   const deleteProduto = async id => {
     try {
       await produtosService.delete(id);
-      setProdutos(produtos.filter(p => p.id !== id));
+      await fetchProdutos();
+      return { success: true };
     } catch (err) {
-      setError('Erro ao excluir produto');
-      throw err;
+      console.error('Erro ao excluir produto:', err);
+      return { success: false, error: err.message };
     }
   };
 
-  // Valores disponibilizados pelo contexto
-  const value = {
-    produtos,
-    loading,
-    error,
-    fetchProdutos,
-    addProduto,
-    updateProduto,
-    deleteProduto,
-  };
-
-  return <ProdutoContext.Provider value={value}>{children}</ProdutoContext.Provider>;
+  return (
+    <ProdutoContext.Provider
+      value={{
+        produtos,
+        loading,
+        error,
+        fetchProdutos,
+        addProduto,
+        updateProduto,
+        deleteProduto,
+      }}
+    >
+      {children}
+    </ProdutoContext.Provider>
+  );
 };
 
-// Hook personalizado para usar o contexto de produtos
 export const useProdutos = () => {
   const context = useContext(ProdutoContext);
   if (!context) {

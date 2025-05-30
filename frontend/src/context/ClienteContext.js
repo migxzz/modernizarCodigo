@@ -1,21 +1,13 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { clientesService } from '../services/api';
 
-// Criando o contexto de clientes
-const ClienteContext = createContext(null);
+const ClienteContext = createContext();
 
-// Provedor do contexto de clientes
 export const ClienteProvider = ({ children }) => {
   const [clientes, setClientes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Carregar clientes ao inicializar
-  useEffect(() => {
-    fetchClientes();
-  }, []);
-
-  // Buscar todos os clientes
   const fetchClientes = async () => {
     try {
       setLoading(true);
@@ -30,55 +22,60 @@ export const ClienteProvider = ({ children }) => {
     }
   };
 
-  // Adicionar um novo cliente
+  useEffect(() => {
+    fetchClientes();
+  }, []);
+
   const addCliente = async cliente => {
     try {
-      const novoCliente = await clientesService.create(cliente);
-      setClientes([...clientes, novoCliente]);
-      return novoCliente;
+      const response = await clientesService.create(cliente);
+      await fetchClientes(); // Recarregar a lista após adicionar
+      return { success: true, data: response };
     } catch (err) {
-      setError('Erro ao adicionar cliente');
-      throw err;
+      console.error('Erro ao adicionar cliente:', err);
+      return { success: false, error: err.message };
     }
   };
 
-  // Atualizar um cliente existente
   const updateCliente = async (id, cliente) => {
     try {
-      await clientesService.update(id, cliente);
-      setClientes(clientes.map(c => (c.id === id ? { ...c, ...cliente } : c)));
+      const response = await clientesService.update(id, cliente);
+      await fetchClientes(); // Recarregar a lista após atualizar
+      return { success: true, data: response };
     } catch (err) {
-      setError('Erro ao atualizar cliente');
-      throw err;
+      console.error('Erro ao atualizar cliente:', err);
+      return { success: false, error: err.message };
     }
   };
 
-  // Excluir um cliente
   const deleteCliente = async id => {
     try {
       await clientesService.delete(id);
-      setClientes(clientes.filter(c => c.id !== id));
+      await fetchClientes(); // Recarregar a lista após excluir
+      return { success: true };
     } catch (err) {
-      setError('Erro ao excluir cliente');
-      throw err;
+      console.error('Erro ao excluir cliente:', err);
+      return { success: false, error: err.message };
     }
   };
 
-  // Valores disponibilizados pelo contexto
-  const value = {
-    clientes,
-    loading,
-    error,
-    fetchClientes,
-    addCliente,
-    updateCliente,
-    deleteCliente,
-  };
-
-  return <ClienteContext.Provider value={value}>{children}</ClienteContext.Provider>;
+  return (
+    <ClienteContext.Provider
+      value={{
+        clientes,
+        loading,
+        error,
+        fetchClientes,
+        addCliente,
+        updateCliente,
+        deleteCliente,
+      }}
+    >
+      {children}
+    </ClienteContext.Provider>
+  );
 };
 
-// Hook personalizado para usar o contexto de clientes
 export const useClientes = () => {
   const context = useContext(ClienteContext);
   if (!context) {

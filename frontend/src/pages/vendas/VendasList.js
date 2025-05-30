@@ -62,7 +62,7 @@ const VendasList = () => {
               {vendas.map(venda => (
                 <tr key={venda.id}>
                   <td>{venda.id}</td>
-                  <td>{venda.cliente_nome}</td>
+                  <td>{venda.cliente?.nome || '-'}</td>
                   <td>{venda.forma_pagamento}</td>
                   <td>{formatDate(venda.dt_venda)}</td>
                   <td className="actions">

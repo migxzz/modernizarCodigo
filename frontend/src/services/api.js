@@ -5,6 +5,52 @@ const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api',
 });
 
+// Interceptor para adicionar o token de autenticação em todas as requisições
+api.interceptors.request.use(
+  config => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  error => Promise.reject(error)
+);
+
+// Interceptor para tratar erros de autenticação
+api.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response && error.response.status === 401) {
+      // Token expirado ou inválido
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
+// Serviços de Autenticação
+export const authService = {
+  login: async credentials => {
+    const response = await api.post('/auth/login', credentials);
+    return response.data;
+  },
+
+  register: async userData => {
+    const response = await api.post('/auth/registro', userData);
+    return response.data;
+  },
+
+  logout: () => {
+    localStorage.removeItem('token');
+  },
+
+  isAuthenticated: () => {
+    return localStorage.getItem('token') !== null;
+  },
+};
+
 // Serviços para Clientes
 export const clientesService = {
   getAll: async () => {

@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { vendasService, clientesService, produtosService } from '../../services/api';
+import { useVendas } from '../../context/VendaContext';
+import { useProdutos } from '../../context/ProdutoContext';
 import './Vendas.css';
 
 const VendaForm = ({ view = false }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const isViewMode = view || (id && view !== false);
+
+  // Acessar os contextos
+  const { fetchVendas } = useVendas();
+  const { fetchProdutos } = useProdutos();
 
   const [venda, setVenda] = useState({
     cliente_id: '',
@@ -113,6 +119,12 @@ const VendaForm = ({ view = false }) => {
       // Enviar dados para a API
       await vendasService.create(venda);
 
+      // Atualizar os contextos
+      await Promise.all([
+        fetchVendas(), // Atualiza a lista de vendas
+        fetchProdutos(), // Atualiza a lista de produtos (estoque)
+      ]);
+
       setSuccess('Venda registrada com sucesso!');
       setTimeout(() => {
         navigate('/vendas');
@@ -197,7 +209,8 @@ const VendaForm = ({ view = false }) => {
                     <option value="">Selecione um produto</option>
                     {produtos.map(produto => (
                       <option key={produto.id} value={produto.id}>
-                        {produto.nome} - R$ {produto.preco.toFixed(2)}
+                        {produto.nome} - R$ {produto.preco.toFixed(2)} - Estoque:{' '}
+                        {produto.quantidade}
                       </option>
                     ))}
                   </select>

@@ -1,11 +1,9 @@
 import React from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './Navbar.css';
-import logoImage from '../assets/logo.png';
 
 const Navbar = () => {
-  const location = useLocation();
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -15,48 +13,54 @@ const Navbar = () => {
   };
 
   return (
-    <header className="navbar">
+    <nav className="navbar">
       <div className="navbar-container">
-        <div className="navbar-logo">
-          <img src={logoImage} alt="Logo" className="logo-img" />
-          <h1>Floricultura</h1>
-        </div>
-        <nav className="navbar-menu">
-          <ul>
-            {isAuthenticated ? (
-              <>
-                <li className={location.pathname === '/dashboard' ? 'active' : ''}>
-                  <Link to="/dashboard">Dashboard</Link>
-                </li>
-                <li className={location.pathname.includes('/clientes') ? 'active' : ''}>
-                  <Link to="/clientes">Clientes</Link>
-                </li>
-                <li className={location.pathname.includes('/produtos') ? 'active' : ''}>
-                  <Link to="/produtos">Produtos</Link>
-                </li>
-                <li className={location.pathname.includes('/vendas') ? 'active' : ''}>
-                  <Link to="/vendas">Vendas</Link>
-                </li>
-                <li>
-                  <button onClick={handleLogout} className="logout-button">
-                    Sair
-                  </button>
-                </li>
-              </>
-            ) : (
-              <>
-                <li className={location.pathname === '/' ? 'active' : ''}>
-                  <Link to="/">Início</Link>
-                </li>
-                <li className={location.pathname === '/login' ? 'active' : ''}>
-                  <Link to="/login">Login</Link>
-                </li>
-              </>
-            )}
-          </ul>
-        </nav>
+        <Link to="/" className="navbar-logo">
+          Floricultura
+        </Link>
+
+        {isAuthenticated ? (
+          <>
+            <ul className="nav-menu">
+              <li className="nav-item">
+                <Link to="/" className="nav-link">
+                  Home
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/clientes" className="nav-link">
+                  Clientes
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/produtos" className="nav-link">
+                  Produtos
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/vendas" className="nav-link">
+                  Vendas
+                </Link>
+              </li>
+            </ul>
+            <div className="nav-auth">
+              <button onClick={handleLogout} className="btn-logout">
+                Sair
+              </button>
+            </div>
+          </>
+        ) : (
+          <div className="nav-auth">
+            <Link to="/login" className="btn-login">
+              Login
+            </Link>
+            <Link to="/register" className="btn-register">
+              Registrar
+            </Link>
+          </div>
+        )}
       </div>
-    </header>
+    </nav>
   );
 };
 
