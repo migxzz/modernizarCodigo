@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import authRoutes from './auth.routes';
 import protegidaRoute from './exemplo-rota-protegida';
+import produtosRoutes from './produtos.routes';
 
 const router = Router();
 
@@ -8,6 +9,9 @@ const router = Router();
 router.use('/auth', authRoutes);
 
 router.use('/teste', protegidaRoute);
+
+// Rotas de produtos
+router.use('/produtos', produtosRoutes);
 
 // Aqui você pode adicionar suas outras rotas
 // Exemplo: router.use('/users', userRoutes);
