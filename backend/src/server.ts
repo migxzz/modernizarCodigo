@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import routes from './routes';
+import { testConnection } from './config/database';
 
 // Carrega as variáveis de ambiente
 dotenv.config();
@@ -12,6 +13,15 @@ const app = express();
 // Middlewares
 app.use(cors());
 app.use(express.json());
+
+// Testa a conexão com o banco de dados
+testConnection()
+  .then(() => {
+    console.log('Banco de dados conectado e pronto para uso');
+  })
+  .catch((error) => {
+    console.error('Falha ao conectar ao banco de dados:', error);
+  });
 
 // Rota básica para teste
 app.get('/', (req: Request, res: Response) => {
