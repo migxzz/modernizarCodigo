@@ -2,7 +2,9 @@ import { PrismaClient } from '@prisma/client';
 
 // Evita múltiplas instâncias do Prisma Client em desenvolvimento
 const prismaClientSingleton = () => {
-  return new PrismaClient();
+  return new PrismaClient({
+    log: ['query', 'error', 'warn'],
+  });
 };
 
 type PrismaClientSingleton = ReturnType<typeof prismaClientSingleton>;
