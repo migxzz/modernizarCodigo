@@ -11,7 +11,7 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { login, isAuthenticated } = useAuth();
-  
+
   // Redirecionar se já estiver autenticado
   useEffect(() => {
     if (isAuthenticated) {
@@ -20,7 +20,7 @@ const Login = () => {
     }
   }, [isAuthenticated, navigate, location]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     setError('');
     setLoading(true);
@@ -40,36 +40,32 @@ const Login = () => {
         <h2>Login</h2>
         <form onSubmit={handleSubmit}>
           {error && <div className="error-message">{error}</div>}
-          
+
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
               type="email"
               id="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={e => setEmail(e.target.value)}
               required
               placeholder="Seu email"
             />
           </div>
-          
+
           <div className="form-group">
             <label htmlFor="senha">Senha</label>
             <input
               type="password"
               id="senha"
               value={senha}
-              onChange={(e) => setSenha(e.target.value)}
+              onChange={e => setSenha(e.target.value)}
               required
               placeholder="Sua senha"
             />
           </div>
-          
-          <button 
-            type="submit" 
-            className="login-button" 
-            disabled={loading}
-          >
+
+          <button type="submit" className="login-button" disabled={loading}>
             {loading ? 'Entrando...' : 'Entrar'}
           </button>
         </form>

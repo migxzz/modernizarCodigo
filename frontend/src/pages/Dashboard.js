@@ -7,7 +7,7 @@ const Dashboard = () => {
     <div className="dashboard-container">
       <h1>Dashboard</h1>
       <p>Bem-vindo ao sistema de gerenciamento</p>
-      
+
       <div className="dashboard-cards">
         <div className="dashboard-card">
           <h2>Clientes</h2>
@@ -16,7 +16,7 @@ const Dashboard = () => {
             Acessar
           </Link>
         </div>
-        
+
         <div className="dashboard-card">
           <h2>Produtos</h2>
           <p>Gerenciar catálogo de produtos</p>
@@ -24,7 +24,7 @@ const Dashboard = () => {
             Acessar
           </Link>
         </div>
-        
+
         <div className="dashboard-card">
           <h2>Vendas</h2>
           <p>Gerenciar registro de vendas</p>
