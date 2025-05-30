@@ -30,7 +30,7 @@ const authService = {
   // Obter o token JWT
   getToken: () => {
     return localStorage.getItem('token');
-  }
+  },
 };
 
 export default authService;

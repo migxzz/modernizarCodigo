@@ -3,24 +3,29 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.3.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.9.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "npm run lint:fix && npm run format && react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest --config ../tests/jest.config.frontend.js",
+    "test:components": "jest \"../tests/frontend/components/**/*.test.js\"",
+    "test:pages": "jest \"../tests/frontend/pages/**/*.test.js\"",
+    "test:e2e": "cypress run",
+    "cypress:open": "cypress open",
     "eject": "react-scripts eject",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
-    "format": "prettier --write \"src/**/*.{js,jsx,css,json}\""
+    "format": "prettier --write \"src/**/*.{js,jsx,css,json}\" \"*.js\"",
+    "format:js": "prettier --write \"src/**/*.{js,jsx}\" \"*.js\"",
+    "format:css": "prettier --write \"src/**/*.css\"",
+    "format:json": "prettier --write \"src/**/*.json\"",
+    "format:config": "prettier --write \"*.js\""
   },
   "eslintConfig": {
     "extends": [
@@ -42,10 +47,18 @@
   },
   "proxy": "http://localhost:5000",
   "devDependencies": {
+    "@babel/preset-env": "^7.27.2",
+    "@babel/preset-react": "^7.27.1",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "babel-jest": "^30.0.0-beta.3",
     "eslint": "^8.38.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.32.2",
-    "prettier": "^2.8.7"
+    "identity-obj-proxy": "^3.0.0",
+    "jest-environment-jsdom": "^30.0.0-beta.3",
+    "prettier": "^2.8.7",
+    "react-router-dom": "^7.6.1"
   }
 }

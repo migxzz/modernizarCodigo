@@ -31,7 +31,7 @@ export const ProdutoProvider = ({ children }) => {
   };
 
   // Adicionar um novo produto
-  const addProduto = async (produto) => {
+  const addProduto = async produto => {
     try {
       const novoProduto = await produtosService.create(produto);
       setProdutos([...produtos, novoProduto]);
@@ -46,7 +46,7 @@ export const ProdutoProvider = ({ children }) => {
   const updateProduto = async (id, produto) => {
     try {
       await produtosService.update(id, produto);
-      setProdutos(produtos.map(p => p.id === id ? { ...p, ...produto } : p));
+      setProdutos(produtos.map(p => (p.id === id ? { ...p, ...produto } : p)));
     } catch (err) {
       setError('Erro ao atualizar produto');
       throw err;
@@ -54,7 +54,7 @@ export const ProdutoProvider = ({ children }) => {
   };
 
   // Excluir um produto
-  const deleteProduto = async (id) => {
+  const deleteProduto = async id => {
     try {
       await produtosService.delete(id);
       setProdutos(produtos.filter(p => p.id !== id));
@@ -72,14 +72,10 @@ export const ProdutoProvider = ({ children }) => {
     fetchProdutos,
     addProduto,
     updateProduto,
-    deleteProduto
+    deleteProduto,
   };
 
-  return (
-    <ProdutoContext.Provider value={value}>
-      {children}
-    </ProdutoContext.Provider>
-  );
+  return <ProdutoContext.Provider value={value}>{children}</ProdutoContext.Provider>;
 };
 
 // Hook personalizado para usar o contexto de produtos

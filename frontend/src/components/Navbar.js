@@ -7,12 +7,12 @@ const Navbar = () => {
   const location = useLocation();
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
-  
+
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
-  
+
   return (
     <header className="navbar">
       <div className="navbar-container">
@@ -34,7 +34,9 @@ const Navbar = () => {
                   <Link to="/vendas">Vendas</Link>
                 </li>
                 <li>
-                  <button onClick={handleLogout} className="logout-button">Sair</button>
+                  <button onClick={handleLogout} className="logout-button">
+                    Sair
+                  </button>
                 </li>
               </>
             ) : (
