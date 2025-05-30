@@ -1,36 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { clientesService } from '../../services/api';
+import { useClientes } from '../../context/ClienteContext';
 import './Clientes.css';
 
 const ClientesList = () => {
-  const [clientes, setClientes] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { clientes, loading, error, deleteCliente } = useClientes();
 
-  useEffect(() => {
-    const fetchClientes = async () => {
-      try {
-        const data = await clientesService.getAll();
-        setClientes(data);
-        setLoading(false);
-      } catch (err) {
-        setError('Erro ao carregar clientes. Por favor, tente novamente.');
-        setLoading(false);
-        console.error('Erro ao buscar clientes:', err);
-      }
-    };
-
-    fetchClientes();
-  }, []);
-
-  const handleDelete = async (id) => {
+  const handleDelete = async id => {
     if (window.confirm('Tem certeza que deseja excluir este cliente?')) {
       try {
-        await clientesService.delete(id);
-        setClientes(clientes.filter(cliente => cliente.id !== id));
+        await deleteCliente(id);
       } catch (err) {
-        setError('Erro ao excluir cliente. Por favor, tente novamente.');
         console.error('Erro ao excluir cliente:', err);
       }
     }
@@ -44,7 +24,9 @@ const ClientesList = () => {
     <div className="clientes-list">
       <div className="page-header">
         <h1>Clientes</h1>
-        <Link to="/clientes/novo" className="btn btn-primary">Novo Cliente</Link>
+        <Link to="/clientes/novo" className="btn btn-primary">
+          Novo Cliente
+        </Link>
       </div>
 
       {error && <div className="alert alert-danger">{error}</div>}
@@ -73,11 +55,14 @@ const ClientesList = () => {
                   <td>{cliente.email || '-'}</td>
                   <td>{cliente.telefone || '-'}</td>
                   <td className="actions">
-                    <Link to={`/clientes/editar/${cliente.id}`} className="btn btn-secondary btn-sm">
+                    <Link
+                      to={`/clientes/editar/${cliente.id}`}
+                      className="btn btn-secondary btn-sm"
+                    >
                       Editar
                     </Link>
-                    <button 
-                      onClick={() => handleDelete(cliente.id)} 
+                    <button
+                      onClick={() => handleDelete(cliente.id)}
                       className="btn btn-danger btn-sm"
                     >
                       Excluir

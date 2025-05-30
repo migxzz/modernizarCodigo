@@ -1,45 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { produtosService } from '../../services/api';
+import { useProdutos } from '../../context/ProdutoContext';
 import './Produtos.css';
 
 const ProdutosList = () => {
-  const [produtos, setProdutos] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { produtos, loading, error, deleteProduto } = useProdutos();
 
-  useEffect(() => {
-    const fetchProdutos = async () => {
-      try {
-        const data = await produtosService.getAll();
-        setProdutos(data);
-        setLoading(false);
-      } catch (err) {
-        setError('Erro ao carregar produtos. Por favor, tente novamente.');
-        setLoading(false);
-        console.error('Erro ao buscar produtos:', err);
-      }
-    };
-
-    fetchProdutos();
-  }, []);
-
-  const handleDelete = async (id) => {
+  const handleDelete = async id => {
     if (window.confirm('Tem certeza que deseja excluir este produto?')) {
       try {
-        await produtosService.delete(id);
-        setProdutos(produtos.filter(produto => produto.id !== id));
+        await deleteProduto(id);
       } catch (err) {
-        setError('Erro ao excluir produto. Por favor, tente novamente.');
         console.error('Erro ao excluir produto:', err);
       }
     }
   };
 
-  const formatCurrency = (value) => {
+  const formatCurrency = value => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
-      currency: 'BRL'
+      currency: 'BRL',
     }).format(value);
   };
 
@@ -51,7 +31,9 @@ const ProdutosList = () => {
     <div className="produtos-list">
       <div className="page-header">
         <h1>Produtos</h1>
-        <Link to="/produtos/novo" className="btn btn-primary">Novo Produto</Link>
+        <Link to="/produtos/novo" className="btn btn-primary">
+          Novo Produto
+        </Link>
       </div>
 
       {error && <div className="alert alert-danger">{error}</div>}
@@ -82,11 +64,14 @@ const ProdutosList = () => {
                   <td>{formatCurrency(produto.preco)}</td>
                   <td>{produto.estoque}</td>
                   <td className="actions">
-                    <Link to={`/produtos/editar/${produto.id}`} className="btn btn-secondary btn-sm">
+                    <Link
+                      to={`/produtos/editar/${produto.id}`}
+                      className="btn btn-secondary btn-sm"
+                    >
                       Editar
                     </Link>
-                    <button 
-                      onClick={() => handleDelete(produto.id)} 
+                    <button
+                      onClick={() => handleDelete(produto.id)}
                       className="btn btn-danger btn-sm"
                     >
                       Excluir
