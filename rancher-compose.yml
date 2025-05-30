@@ -24,7 +24,7 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.rancher
     container_name: legacy_ap_backend
     restart: always
     depends_on:
@@ -45,7 +45,7 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.rancher
     container_name: legacy_ap_frontend
     restart: always
     ports:
