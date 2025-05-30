@@ -45,3 +45,9 @@ model ItemVenda {
 
   @@id([venda_id, produto_id])
 }
+
+model Usuario {
+  usuario_id     Int      @id @default(autoincrement())
+  email          String   @unique
+  senha          String
+}
